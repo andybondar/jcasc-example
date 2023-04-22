@@ -13,3 +13,19 @@ This tutorial aims to help the beginners automate Jenkins deployment and configu
 * Moving Jenkins Server to Cloud
 * Using Jenkins Configuration as Code
 * Portability, Scalability and other tips
+
+## Getting started with Jenkins Server
+### Step 1 - Running containerized Jenkins
+Run `vanilla` Jenkins image by using `docker run` command:
+```
+$ docker run --name jenkins --rm -p 8080:8080 jenkins/jenkins:latest
+```
+
+The following output indicates that Jenkins is up and running:
+```
+2023-04-22 19:14:30.632+0000 [id=22]	INFO	hudson.lifecycle.Lifecycle#onReady: Jenkins is fully up and running
+```
+Now, use your browser to navigate to `http://server_ip:8080`.
+
+### Step 2 - Disabling the Setup Wizard
+TBD
