@@ -28,4 +28,20 @@ The following output indicates that Jenkins is up and running:
 Now, use your browser to navigate to `http://server_ip:8080`.
 
 ### Step 2 - Disabling the Setup Wizard
-TBD
+Create `Dockerfile` and copy the following content into it (Jenkins version can be different for you):
+```
+FROM jenkins/jenkins:2.401
+ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false
+```
+
+Build custom Docker image:
+```
+$ docker build -t jenkins:jcasc .
+```
+
+Run Docker container using that custom image:
+```
+$ docker run --name jenkins --rm -p 8080:8080 jenkins:jcasc
+```
+
+Navigate to `http://server_ip:8080` in your web browser. You should be able to see Jenkins dashboard without going through the Setup Wizard.
