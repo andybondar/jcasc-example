@@ -151,17 +151,23 @@ The name of the project, `jcas-lab-01` will be different for you.
 
 Tag your local custom Jenkins image as follows:
 ```
-docker tag jenkins:jcasc gcr.io/jcas-lab-004/jenkins:jcasc
+docker tag jenkins:jcasc gcr.io/jcas-lab-01/jenkins:jcasc
 ```
 
-Push your local custom Jenkins image to `gcr.io/jcas-lab-004/` container registry:
+Push your local custom Jenkins image to `gcr.io/jcas-lab-01/` container registry:
 ```
-docker push gcr.io/jcas-lab-004/jenkins:jcasc
+docker push gcr.io/jcas-lab-01/jenkins:jcasc
 ```
 
 The output of the `gcloud container images list` command should be the following:
 ```
 NAME
-gcr.io/jcas-lab-004/jenkins
-Only listing images in gcr.io/jcas-lab-004. Use --repository to list images in other repositories.
+gcr.io/jcas-lab-01/jenkins
+Only listing images in gcr.io/jcas-lab-01. Use --repository to list images in other repositories.
 ```
+
+### Step 3 - Running Jenkins in GCE Virtual Machine
+Now, it is time to run your containerized Jenkins Server in GCP. Go to the `terraform/modules/compute` folder and run `init/plan/apply` sequence.
+
+
+As the GCE VM running Jenkins Server is started, a public IP address will be assigned to that VM and a DNS record withing the existing Cloud DNS zone will be created. That DNS record associates the IP address with an FQDN within that DNS Zone. Creating a Cloud DNS Zone is not covered by this guide, at least for now. We're using an existing Cloud DNS zone here.
