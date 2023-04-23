@@ -135,3 +135,33 @@ Now, go to the `terraform/modules/services` folder and do the same `terraform in
 Google Container Registry API - containerregistry.googleapis.com
 Compute Engine API - compute.googleapis.com
 ```
+
+### Step 2 - Pushing Jenkins custom image to Google Container Registry
+Fist, make sure that you have access to the `gcr.io` Container Registry:
+```
+gcloud container images list
+```
+
+You should see the following output:
+```
+Listed 0 items.
+Only listing images in gcr.io/jcas-lab-01. Use --repository to list images in other repositories.
+```
+The name of the project, `jcas-lab-01` will be different for you.
+
+Tag your local custom Jenkins image as follows:
+```
+docker tag jenkins:jcasc gcr.io/jcas-lab-004/jenkins:jcasc
+```
+
+Push your local custom Jenkins image to `gcr.io/jcas-lab-004/` container registry:
+```
+docker push gcr.io/jcas-lab-004/jenkins:jcasc
+```
+
+The output of the `gcloud container images list` command should be the following:
+```
+NAME
+gcr.io/jcas-lab-004/jenkins
+Only listing images in gcr.io/jcas-lab-004. Use --repository to list images in other repositories.
+```
