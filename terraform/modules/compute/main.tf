@@ -29,9 +29,14 @@ resource "google_compute_instance" "jenkins" {
       jenkins_version       = var.jenkins_version
       jenkins_external_port = var.jenkins_external_port
       jenkins_project       = var.project_name
+      jenkins_fqdn          = trimsuffix("jenkins.${data.google_dns_managed_zone.main.dns_name}", ".")
   })
 
   metadata = {
     ssh-keys = "${var.ssh_user}:${file(var.ssh_pub_key_file)}"
   }
+}
+
+output "jenkins_fqdn" {
+  value = trimsuffix("jenkins.${data.google_dns_managed_zone.main.dns_name}", ".")
 }

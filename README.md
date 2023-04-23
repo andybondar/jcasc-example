@@ -171,3 +171,32 @@ Now, it is time to run your containerized Jenkins Server in GCP. Go to the `terr
 
 
 As the GCE VM running Jenkins Server is started, a public IP address will be assigned to that VM and a DNS record withing the existing Cloud DNS zone will be created. That DNS record associates the IP address with an FQDN within that DNS Zone. Creating a Cloud DNS Zone is not covered by this guide, at least for now. We're using an existing Cloud DNS zone here.
+
+## Using Jenkins Configuration as Code
+In this section we will go through the Jenkins configuration using `Configuration as Code` plugin, which allows to configure Jenkins based on human-readable declarative `yaml` file(s).
+
+### Step 1 - Setting up Jenkins URL
+First thing, we need to add `configuration-as-code` plugin to the `jcasc/plugins.txt` file:
+```diff
++ configuration-as-code:latest
+```
+
+Create and modify `jcasc/casc.yaml` file:
+```yaml
+unclassified:
+  location:
+    url: http://${JENKINS_URL}/
+```
+
+
+Add some instructions to the `Dockerfile`:
+```diff
+FROM jenkins/jenkins:2.401
+ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false
++ ENV CASC_JENKINS_CONFIG /usr/share/jenkins/ref/casc.yaml
+COPY jcasc/plugins.txt /usr/share/jenkins/ref/plugins.txt
+RUN jenkins-plugin-cli -f /usr/share/jenkins/ref/plugins.txt
++ COPY jcasc/casc.yaml /usr/share/jenkins/ref/casc.yaml
+```
+
+Build a new Jenkins image and push it to GCR. Then deploy VM.

@@ -2,6 +2,7 @@ ant:latest
 antisamy-markup-formatter:latest
 build-timeout:latest
 cloudbees-folder:latest
+configuration-as-code:latest
 credentials-binding:latest
 email-ext:latest
 git:latest
