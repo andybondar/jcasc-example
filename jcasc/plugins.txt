@@ -1,5 +1,6 @@
 ant:latest
 antisamy-markup-formatter:latest
+blueocean:latest
 build-timeout:latest
 cloudbees-folder:latest
 configuration-as-code:latest
@@ -12,5 +13,9 @@ ldap:latest
 mailer:latest
 matrix-auth:latest
 pam-auth:latest
+pipeline-github-lib:latest
+pipeline-stage-view:latest
+workflow-aggregator:latest
+ssh-slaves:latest
 timestamper:latest
 ws-cleanup:latest

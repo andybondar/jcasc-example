@@ -237,3 +237,23 @@ unclassified:
 ```
 
 Re-build Jenkins image and push it to the GCR. Re-deploy the VM.
+
+### Step 4 - Jenkins Pipelines as Code and more
+Now, let's some extra plugins which will allow us to define Jenkins Pipelines as code:
+```
+pipeline-github-lib:latest
+pipeline-stage-view:latest
+workflow-aggregator:latest
+```
+
+Also, the following plugin allows to launch remote Jenkins agents via SSH:
+```
+ssh-slaves:latest
+```
+
+Improving Jenkins Pipelines visualization:
+```
+blueocean:latest
+```
+
+Add those plugins to the `jcasc/plugins.txt` file, re-build the Jenkins image and push it to the GCR. Re-deploy the VM.
