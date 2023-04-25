@@ -5,6 +5,9 @@ jenkins:
       users:
        - id: ${JENKINS_ADMIN_ID}
          password: ${JENKINS_ADMIN_PASSWORD}
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
 unclassified:
   location:
     url: ${JENKINS_URL}

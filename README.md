@@ -217,3 +217,23 @@ unclassified:
 ```
 
 Re-build Jenkins image and push it to the GCR. Re-deploy the VM.
+
+### Step 3 - Setting Up Authorization Strategy
+The user we have created can successfully log in, but still any unauthorized, anonymous user can have access to the Jenkins management dashboard, whithout any authentication. To fix that, edit `jcasc/casc.yaml` file as follows:
+```diff
+jenkins:
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+       - id: ${JENKINS_ADMIN_ID}
+         password: ${JENKINS_ADMIN_PASSWORD}
++  authorizationStrategy:
++    loggedInUsersCanDoAnything:
++      allowAnonymousRead: false         
+unclassified:
+  location:
+    url: ${JENKINS_URL}
+```
+
+Re-build Jenkins image and push it to the GCR. Re-deploy the VM.
