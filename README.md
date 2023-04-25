@@ -175,7 +175,7 @@ As the GCE VM running Jenkins Server is started, a public IP address will be ass
 ## Using Jenkins Configuration as Code
 In this section we will go through the Jenkins configuration using `Configuration as Code` plugin, which allows to configure Jenkins based on human-readable declarative `yaml` file(s).
 
-### Step 1 - Setting up Jenkins URL
+### Step 1 - Setting up Jenkins URL 
 First thing, we need to add `configuration-as-code` plugin to the `jcasc/plugins.txt` file:
 ```diff
 + configuration-as-code:latest
@@ -200,3 +200,20 @@ RUN jenkins-plugin-cli -f /usr/share/jenkins/ref/plugins.txt
 ```
 
 Build a new Jenkins image and push it to GCR. Then deploy VM.
+
+### Step 2 - Creating a User
+Edit `jcasc/casc.yaml` file:
+```diff
++ jenkins:
++  securityRealm:
++    local:
++      allowsSignup: false
++      users:
++       - id: ${JENKINS_ADMIN_ID}
++         password: ${JENKINS_ADMIN_PASSWORD}
+unclassified:
+  location:
+    url: ${JENKINS_URL}
+```
+
+Re-build Jenkins image and push it to the GCR. Re-deploy the VM.

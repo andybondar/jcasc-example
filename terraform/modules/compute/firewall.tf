@@ -13,4 +13,6 @@ resource "google_compute_firewall" "fw_rules" {
 
   source_ranges = var.firewall_rules[count.index].source_ranges
   target_tags   = var.firewall_rules[count.index].target_tags
+
+  disabled = var.firewall_rules[count.index].disabled
 }

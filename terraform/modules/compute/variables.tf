@@ -10,6 +10,16 @@ variable "jenkins_external_port" {
   default     = "8080"
 }
 
+variable "jenkins_admin" {
+  type = string
+  description = "Jenkins admin"
+}
+
+variable "jenkins_pw" {
+  type = string
+  description = "Jenkins password"
+}
+
 variable "dns_project_name" {
   type        = string
   description = "DNS Project Name"

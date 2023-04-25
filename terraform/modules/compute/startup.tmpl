@@ -1,1 +1,1 @@
-docker run --name jenkins_master -p ${jenkins_external_port}:8080 -p 50000:50000 -v jenkins_home:/var/jenkins_home --env JENKINS_URL=http://${jenkins_fqdn}/ gcr.io/${jenkins_project}/jenkins:${jenkins_version}
+docker run --name jenkins_master --rm -p ${jenkins_external_port}:8080 --env JENKINS_URL=http://${jenkins_fqdn}/ --env JENKINS_ADMIN_ID=${jenkins_admin} --env JENKINS_ADMIN_PASSWORD=${jenkins_pw} gcr.io/${jenkins_project}/jenkins:${jenkins_version}

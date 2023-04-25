@@ -30,6 +30,8 @@ resource "google_compute_instance" "jenkins" {
       jenkins_external_port = var.jenkins_external_port
       jenkins_project       = var.project_name
       jenkins_fqdn          = trimsuffix("jenkins.${data.google_dns_managed_zone.main.dns_name}", ".")
+      jenkins_admin          = var.jenkins_admin
+      jenkins_pw            = var.jenkins_pw
   })
 
   metadata = {
