@@ -1,1 +1,21 @@
-docker run --name jenkins_master --rm -p ${jenkins_external_port}:8080 --env JENKINS_URL=http://${jenkins_fqdn}/ --env JENKINS_ADMIN_ID=${jenkins_admin} --env JENKINS_ADMIN_PASSWORD=${jenkins_pw} gcr.io/${jenkins_project}/jenkins:${jenkins_version}
+#!/bin/bash
+
+echo "Format Jenkins data disk"
+fdisk -l /dev/sdb | grep sdb1
+
+if [[ $(fdisk -l /dev/sdb | grep sdb1 | wc -l) == 0 ]]; then
+	echo "Format disk"
+	echo 'type=83' | sfdisk /dev/sdb
+	mkfs.ext4 /dev/sdb1
+	echo "Disk formatted successfully"
+else
+	echo "Disk is already formated. Skip formatting."
+fi
+
+# Mount Jenkins data disk"
+mkdir -p /mnt/stateful_partition/jenkins_home
+mount /dev/sdb1 /mnt/stateful_partition/jenkins_home
+chown -R chronos:chronos /mnt/stateful_partition/jenkins_home
+
+# Start Jenkins
+docker run --name jenkins_master --rm -p ${jenkins_external_port}:8080 -v /mnt/stateful_partition/jenkins_home:/var/jenkins_home --env JENKINS_URL=http://${jenkins_fqdn}/ --env JENKINS_ADMIN_ID=${jenkins_admin} --env JENKINS_ADMIN_PASSWORD=${jenkins_pw} gcr.io/${jenkins_project}/jenkins:${jenkins_version}

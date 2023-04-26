@@ -30,13 +30,19 @@ resource "google_compute_instance" "jenkins" {
       jenkins_external_port = var.jenkins_external_port
       jenkins_project       = var.project_name
       jenkins_fqdn          = trimsuffix("jenkins.${data.google_dns_managed_zone.main.dns_name}", ".")
-      jenkins_admin          = var.jenkins_admin
+      jenkins_admin         = var.jenkins_admin
       jenkins_pw            = var.jenkins_pw
   })
 
   metadata = {
     ssh-keys = "${var.ssh_user}:${file(var.ssh_pub_key_file)}"
   }
+}
+
+resource "google_compute_attached_disk" "jenkins" {
+  count    = length(local.vms)
+  disk     = data.google_compute_disk.jenkins.id
+  instance = google_compute_instance.jenkins[count.index].id
 }
 
 output "jenkins_fqdn" {

@@ -11,12 +11,12 @@ variable "jenkins_external_port" {
 }
 
 variable "jenkins_admin" {
-  type = string
+  type        = string
   description = "Jenkins admin"
 }
 
 variable "jenkins_pw" {
-  type = string
+  type        = string
   description = "Jenkins password"
 }
 

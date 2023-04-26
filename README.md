@@ -257,3 +257,7 @@ blueocean:latest
 ```
 
 Add those plugins to the `jcasc/plugins.txt` file, re-build the Jenkins image and push it to the GCR. Re-deploy the VM.
+
+## Data persistency, Portability, Scalability and other tips
+### Step 1 - Attaching additional Disk to Jenkins VM
+Additional disk will be used to store Jenkins persistent data, like jobs and pipelines configuration, history of their runs, etc.

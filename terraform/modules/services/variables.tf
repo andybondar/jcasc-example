@@ -1,5 +1,5 @@
 variable "services" {
-  type = any
+  type        = any
   description = "GCP Service APIs"
-  default = []
+  default     = []
 }

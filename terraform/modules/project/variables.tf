@@ -1,4 +1,4 @@
 variable "billing_account" {
-  type = string
+  type        = string
   description = "Billing account ID"
 }

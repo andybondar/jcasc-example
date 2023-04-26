@@ -33,3 +33,9 @@ variable "project_name" {
   description = "GCP project name"
   # default     = "jcas-lab-01"
 }
+
+variable "extra_disk_name" {
+  type        = string
+  description = "Extra disk name"
+  default     = "jenkins-data"
+}

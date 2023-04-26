@@ -1,5 +1,5 @@
 resource "google_project_service" "main" {
-  count = length(var.services)
+  count   = length(var.services)
   project = var.project_name
   service = var.services[count.index]
 
