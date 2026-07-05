@@ -27,6 +27,14 @@ The following output indicates that Jenkins is up and running:
 ```
 Now, use your browser to navigate to `http://server_ip:8080`, http://127.0.0.1:8080 if Jenkins is running on your local machine.
 
+Open an interactive shell install the container to get the password:
+```
+docker exec -it $(docker ps | grep "jenkins:latest" | awk '{print $1}') bash
+
+$ cat /var/jenkins_home/secrets/initialAdminPassword
+751tdf5a571d4f4781db834de2114d14
+```
+
 ### Step 2 - Disabling the Setup Wizard
 Create `Dockerfile` and copy the following content into it (Jenkins version can be different for you):
 ```
