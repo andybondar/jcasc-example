@@ -10,8 +10,8 @@ This tutorial aims to help the beginners automate Jenkins deployment and configu
 
 ## Agenda
 * Getting started with Jenkins Server
-* Moving Jenkins Server to Cloud
 * Using Jenkins Configuration as Code
+* Moving Jenkins Server to Cloud
 * Portability, Scalability and other tips
 
 ## Getting started with Jenkins Server
@@ -106,10 +106,6 @@ Once the build is done, run the new Jenkins image:
 docker run --name jenkins --rm -p 8080:8080 jenkins:jcasc
 ```
 
-## Moving Jenkins Server to Cloud
-* [GCP](terraform/gcp/README.md)
-* [AWS](terraform/aws/README.md)
-
 ## Using Jenkins Configuration as Code
 In this section we will go through the Jenkins configuration using `Configuration as Code` plugin, which allows to configure Jenkins based on human-readable declarative `yaml` file(s).
 
@@ -195,6 +191,10 @@ blueocean:latest
 ```
 
 Add those plugins to the `jcasc/plugins.txt` file, re-build the Jenkins image and push it to container registry. Re-deploy the VM.
+
+## Moving Jenkins Server to Cloud
+* [GCP](terraform/gcp/README.md)
+* [AWS](terraform/aws/README.md)
 
 ## Data persistency, Portability, Scalability and other tips
 ### Step 1 - Attaching additional Disk to Jenkins VM
