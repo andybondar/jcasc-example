@@ -32,14 +32,13 @@ Open an interactive shell install the container to get the password:
 docker exec -it $(docker ps | grep "jenkins:latest" | awk '{print $1}') bash
 
 $ cat /var/jenkins_home/secrets/initialAdminPassword
-751tdf5a571d4f4781db834de2114d14
 ```
 
 ### Step 2 - Disabling the Setup Wizard
 Create `Dockerfile` and copy the following content into it (Jenkins version can be different for you):
 ```
-FROM jenkins/jenkins:2.401
-ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false
+FROM jenkins/jenkins:2.573
+ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
 ```
 
 Build custom Docker image:
@@ -64,23 +63,9 @@ mkdir jcasc
 vim jcasc/plugins.txt
 ```
 
-Then, add the following newline-separated entries into that file, using the `<plugin_id>:<version>` format:
+Then, add the following newline-separated entries into that file, using the `<plugin_id>:<version>` format, starting from `configuration-as-code:latest`:
 ```
-ant:latest
-antisamy-markup-formatter:latest
-build-timeout:latest
-cloudbees-folder:latest
-credentials-binding:latest
-email-ext:latest
-git:latest
-github-branch-source:latest
-gradle:latest
-ldap:latest
-mailer:latest
-matrix-auth:latest
-pam-auth:latest
-timestamper:latest
-ws-cleanup:latest
+configuration-as-code:latest
 ```
 
 Next, edit the `Dockerfile`:
@@ -89,11 +74,11 @@ vim Dockerfile
 ```
 
 In it, add `COPY` instaruction to copy the `jcasc/plugins.txt` file into the `/usr/share/jenkins/ref/` inside the Jenkins image. Also, add `RUN` instruction, which will execute the `/usr/local/bin/install-plugins.sh` script inside the image:
-```
-FROM jenkins/jenkins:2.401
-ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false
-COPY jcasc/plugins.txt /usr/share/jenkins/ref/plugins.txt
-RUN jenkins-plugin-cli -f /usr/share/jenkins/ref/plugins.txt
+```diff
+FROM jenkins/jenkins:2.573
+ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
++ COPY jcasc/plugins.txt /usr/share/jenkins/ref/plugins.txt
++ RUN jenkins-plugin-cli -f /usr/share/jenkins/ref/plugins.txt
 ```
 
 Save the `Dockerfile` and build a new image:
@@ -110,12 +95,7 @@ docker run --name jenkins --rm -p 8080:8080 jenkins:jcasc
 In this section we will go through the Jenkins configuration using `Configuration as Code` plugin, which allows to configure Jenkins based on human-readable declarative `yaml` file(s).
 
 ### Step 1 - Setting up Jenkins URL 
-First thing, we need to add `configuration-as-code` plugin to the `jcasc/plugins.txt` file:
-```diff
-+ configuration-as-code:latest
-```
-
-Create and modify `jcasc/casc.yaml` file:
+Create and modify `jcasc/jcasc.yaml` file:
 ```yaml
 unclassified:
   location:
@@ -125,18 +105,18 @@ unclassified:
 
 Add some instructions to the `Dockerfile`:
 ```diff
-FROM jenkins/jenkins:2.571
-ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false
-+ ENV CASC_JENKINS_CONFIG /usr/share/jenkins/ref/casc.yaml
+FROM jenkins/jenkins:2.573
+ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
++ ENV CASC_JENKINS_CONFIG="/usr/share/jenkins/ref/jcasc.yaml"
 COPY jcasc/plugins.txt /usr/share/jenkins/ref/plugins.txt
 RUN jenkins-plugin-cli -f /usr/share/jenkins/ref/plugins.txt
-+ COPY jcasc/casc.yaml /usr/share/jenkins/ref/casc.yaml
++ COPY jcasc/jcasc.yaml /usr/share/jenkins/ref/jcasc.yaml
 ```
 
 Build a new Jenkins image and push it to container registry. Then deploy VM.
 
 ### Step 2 - Creating a User
-Edit `jcasc/casc.yaml` file:
+Edit `jcasc/jcasc.yaml` file:
 ```diff
 + jenkins:
 +  securityRealm:
@@ -173,21 +153,51 @@ unclassified:
 Re-build Jenkins image and push it to container registry. Re-deploy the VM.
 
 ### Step 4 - Jenkins Pipelines as Code and more
-Now, let's some extra plugins which will allow us to define Jenkins Pipelines as code:
+Now, let's add `workflow-aggregator` plugin to `` which will allow us to define Jenkins Pipelines as code:
 ```
-pipeline-github-lib:latest
-pipeline-stage-view:latest
 workflow-aggregator:latest
 ```
 
-Also, the following plugin allows to launch remote Jenkins agents via SSH:
+Also, the following plugin allows to use fundamental `git` operations for Jenkins projects, including form tha Pipelines:
 ```
-ssh-slaves:latest
+git:latest
 ```
 
 Improving Jenkins Pipelines visualization:
 ```
 blueocean:latest
+```
+
+Add plugins allowing to work with Terraform CLI and to use AWS Credentials:
+```
+terraform:latest
+aws-credentials:latest
+```
+
+Define Terraform installation in the `jcasc/jcasc.yaml` file:
+```diff
+jenkins:
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+       - id: admin
+         password: admin
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
++ tool:
++  terraform:
++    installations:
++      - name: "terraform-1.14.1"
++        properties:
++          - installSource:
++              installers:
++                - terraformInstaller:
++                    id: "1.14.1-linux-amd64"
+unclassified:
+  location:
+    url: http://127.0.0.1:8080/
 ```
 
 Add those plugins to the `jcasc/plugins.txt` file, re-build the Jenkins image and push it to container registry. Re-deploy the VM.
