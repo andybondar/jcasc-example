@@ -9,7 +9,7 @@ variable "subnet" {
   description = "Subnet"
   default = {
     cidr = "10.0.0.0/24"
-    name = "rg2025_subnet"
+    name = "jcasc_subnet"
     az   = "eu-central-1a"
   }
 }
