@@ -24,14 +24,16 @@ pipeline {
         stage('Keypair') {
             steps {
                 dir('terraform/aws/modules/keypair') {
-                    sh 'pwd'
-                    sh 'terraform init -lock-timeout=60s'
-                    sh 'terraform validate'
-                    sh 'terraform plan -lock-timeout=60s'
-                    timeout(time: 10, unit: 'MINUTES') {
-                        input message: 'Proceed?', ok: 'Yes'
+                    withCredentials([file(credentialsId: 'jcasc_id_rsa.pub', variable: 'TF_VAR_public_key_path')]) {
+                        sh 'pwd'
+                        sh 'terraform init -lock-timeout=60s'
+                        sh 'terraform validate'
+                        sh 'terraform plan -lock-timeout=60s'
+                        timeout(time: 10, unit: 'MINUTES') {
+                            input message: 'Proceed?', ok: 'Yes'
+                        }
+                        sh 'terraform apply -lock-timeout=60s -auto-approve'
                     }
-                    sh 'terraform apply -lock-timeout=60s -auto-approve'
                 }
             }
         }
@@ -59,7 +61,7 @@ pipeline {
                     timeout(time: 10, unit: 'MINUTES') {
                         input message: 'Proceed?', ok: 'Yes'
                     }
-                    sh 'terraform apply -lock-timeout=60s -auto-approve'                    
+                    sh 'terraform apply -lock-timeout=60s -auto-approve'
                 }
             }
         }
