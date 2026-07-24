@@ -5,6 +5,7 @@ resource "aws_instance" "main" {
   key_name               = "jcasc_keypair"
   subnet_id              = data.aws_subnet.main.id
   vpc_security_group_ids = [data.aws_security_group.main.id]
+  user_data              = file("install_jenkins.tftpl")
 
   root_block_device {
     encrypted   = true
