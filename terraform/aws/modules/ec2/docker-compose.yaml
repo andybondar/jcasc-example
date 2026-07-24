@@ -1,6 +1,6 @@
 services:
   jenkins:
-    image: AWS_ACCOUNT_PLACEHOLDER.dkr.ecr.eu-central-1.amazonaws.com/jenkins:jcasc
+    image: AWS_ACCOUNT_PLACEHOLDER.dkr.ecr.eu-central-1.amazonaws.com/jenkins:jcasc.aws
     container_name: jenkins
     restart: always
     ports:
