@@ -28,3 +28,5 @@ mkdir /opt/compose
 cat <<'EOT' > /opt/compose/docker-compose.yaml
 ${compose_content}
 EOT
+
+sed -i s/AWS_ACCOUNT_PLACEHOLDER/${aws_account}/g /opt/compose/docker-compose.yaml
