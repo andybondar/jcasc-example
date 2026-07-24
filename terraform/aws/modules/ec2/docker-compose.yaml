@@ -1,0 +1,13 @@
+services:
+  jenkins:
+    image: AWS_ACCOUNT_PLACEHOLDER.dkr.ecr.eu-central-1.amazonaws.com/jenkins:jcasc
+    container_name: jenkins
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

@@ -7,6 +7,7 @@ resource "aws_instance" "main" {
   vpc_security_group_ids = [data.aws_security_group.main.id]
   user_data              = templatefile("install_jenkins.tftpl", {
     aws_account        = var.aws_account
+    compose_content    = file("docker-compose.yaml")
   })
 
   root_block_device {
