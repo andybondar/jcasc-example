@@ -5,7 +5,9 @@ resource "aws_instance" "main" {
   key_name               = "jcasc_keypair"
   subnet_id              = data.aws_subnet.main.id
   vpc_security_group_ids = [data.aws_security_group.main.id]
-  user_data              = file("install_jenkins.tftpl")
+  user_data              = templatefile("install_jenkins.tftpl", {
+    aws_account        = var.aws_account
+  })
 
   root_block_device {
     encrypted   = true
@@ -13,6 +15,8 @@ resource "aws_instance" "main" {
 
     tags = local.disk_tags
   }
+
+  iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
 
   tags = local.ec2_tags
 }

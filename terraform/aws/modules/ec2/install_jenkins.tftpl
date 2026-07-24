@@ -16,3 +16,9 @@ apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-co
 
 # Install AWS CLI
 snap install aws-cli --classic
+
+# Log in to ECR
+aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${aws_account}.dkr.ecr.eu-central-1.amazonaws.com
+
+# Pull image
+docker pull ${aws_account}.dkr.ecr.eu-central-1.amazonaws.com/jenkins:jcasc.aws

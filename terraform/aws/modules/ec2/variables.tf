@@ -9,3 +9,8 @@ variable "ec2_disk_size" {
   description = "EC2 disk size"
   default     = 20
 }
+
+variable "aws_account" {
+  type        = string
+  description = "AWS account"
+}
