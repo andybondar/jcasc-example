@@ -30,3 +30,7 @@ ${compose_content}
 EOT
 
 sed -i s/AWS_ACCOUNT_PLACEHOLDER/${aws_account}/g /opt/compose/docker-compose.yaml
+
+# Start Docker Compose
+cd /opt/compose/
+docker compose up -d
