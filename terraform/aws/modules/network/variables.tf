@@ -10,7 +10,6 @@ variable "subnet" {
   default = {
     cidr = "10.0.0.0/24"
     name = "jcasc_subnet"
-    az   = "eu-central-1a"
   }
 }
 

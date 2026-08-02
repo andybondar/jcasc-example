@@ -17,3 +17,9 @@ variable "region" {
   description = "Default region"
   default     = "eu-central-1"
 }
+
+variable "az" {
+  type = string
+  description = "Availability zone for EBS and EC2"
+  default = "eu-central-1a"
+}

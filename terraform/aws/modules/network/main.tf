@@ -9,7 +9,7 @@ resource "aws_subnet" "main" {
   vpc_id            = aws_vpc.main.id
   region            = var.region
   cidr_block        = var.subnet["cidr"]
-  availability_zone = var.subnet["az"]
+  availability_zone = var.az
 
   tags = local.subnet_tags
 }
