@@ -5,9 +5,9 @@ resource "aws_instance" "main" {
   key_name               = "jcasc_keypair"
   subnet_id              = data.aws_subnet.main.id
   vpc_security_group_ids = [data.aws_security_group.main.id]
-  user_data              = templatefile("install_jenkins.tftpl", {
-    aws_account        = var.aws_account
-    compose_content    = file("docker-compose.yaml")
+  user_data = templatefile("install_jenkins.tftpl", {
+    aws_account     = var.aws_account
+    compose_content = file("docker-compose.yaml")
   })
 
   root_block_device {
@@ -20,6 +20,12 @@ resource "aws_instance" "main" {
   iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
 
   tags = local.ec2_tags
+}
+
+resource "aws_volume_attachment" "main" {
+  device_name = "/dev/xvdbb"
+  volume_id   = data.aws_ebs_volume.main.id
+  instance_id = aws_instance.main.id
 }
 
 resource "aws_eip_association" "main" {

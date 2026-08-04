@@ -30,3 +30,13 @@ data "aws_eip" "main" {
     values = ["jcasc_eip"]
   }
 }
+
+data "aws_ebs_volume" "main" {
+  most_recent = true
+  region      = var.region
+
+  filter {
+    name   = "tag:Name"
+    values = ["jcasc_home_disk"]
+  }
+}
