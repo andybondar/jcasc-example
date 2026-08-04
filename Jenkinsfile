@@ -54,14 +54,16 @@ pipeline {
         stage('Network') {
             steps {
                 dir('terraform/aws/modules/network') {
-                    sh 'pwd'
-                    sh 'terraform init -lock-timeout=60s'
-                    sh 'terraform validate'
-                    sh 'terraform plan -lock-timeout=60s'
-                    timeout(time: 10, unit: 'MINUTES') {
-                        input message: 'Proceed?', ok: 'Yes'
+                    withCredentials([file(credentialsId: 'jcasc_allow_http_terraform.tfvars', variable: 'ALLOW_HTTP_TFVAR')]) {
+                        sh 'pwd'
+                        sh 'terraform init -lock-timeout=60s'
+                        sh 'terraform validate'
+                        sh 'terraform plan -lock-timeout=60s -var-file=${ALLOW_HTTP_TFVAR}'
+                        timeout(time: 10, unit: 'MINUTES') {
+                            input message: 'Proceed?', ok: 'Yes'
+                        }
+                        sh 'terraform apply -lock-timeout=60s -auto-approve -var-file=${ALLOW_HTTP_TFVAR}'
                     }
-                    sh 'terraform apply -lock-timeout=60s -auto-approve'
                 }
             }
         }
