@@ -1,4 +1,27 @@
 #!/bin/bash
+# Wait for disk to be attached
+while [ ! -e ${disk} ]; do
+	echo "Waiting for disk ${disk} to be attached..."
+	sleep 1
+done
+
+echo "Disk ${disk} has been attched. Proceeding."
+
+# Create and format disk partition
+echo 'type=83' | sfdisk ${disk}
+mkfs.ext4 ${disk}p1
+
+# Create 'jenkins_home' directory
+mkdir -p /opt/jenkins_home
+
+# Mount new disk partition to 'jenkins_home' directory
+mount ${disk}p1 /opt/jenkins_home
+
+# Modify /etc/fstab
+echo "UUID:"
+echo $(blkid ${disk}p1 | awk '{print $2}' | awk -F"\"" '{print $2}')
+echo "UUID=$(blkid ${disk}p1 | awk '{print $2}' | awk -F"\"" '{print $2}')	/opt/jenkins_home	ext4  defaults,noatime  0  2" >> /etc/fstab
+
 # Add Docker's official GPG key:
 apt update -y
 apt install ca-certificates curl gnupg lsb-release -y
@@ -32,5 +55,3 @@ EOT
 sed -i s/AWS_ACCOUNT_PLACEHOLDER/${aws_account}/g /opt/compose/docker-compose.yaml
 
 # Start Docker Compose
-cd /opt/compose/
-docker compose up -d

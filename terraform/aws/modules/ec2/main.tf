@@ -6,6 +6,7 @@ resource "aws_instance" "main" {
   subnet_id              = data.aws_subnet.main.id
   vpc_security_group_ids = [data.aws_security_group.main.id]
   user_data = templatefile("install_jenkins.tftpl", {
+    disk            = "/dev/nvme1n1"
     aws_account     = var.aws_account
     compose_content = file("docker-compose.yaml")
   })
