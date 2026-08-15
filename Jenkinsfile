@@ -21,7 +21,9 @@ pipeline {
                 }
             }
         }
-        stage('Keypair') {
+        stage('Key pair, EBS, Network') {
+            parallel {
+        stage('Key pair') {
             steps {
                 dir('terraform/aws/modules/keypair') {
                     withCredentials([file(credentialsId: 'jcasc_id_rsa.pub', variable: 'TF_VAR_public_key_path')]) {
@@ -65,6 +67,8 @@ pipeline {
                         sh 'terraform apply -lock-timeout=60s -auto-approve -var-file=${ALLOW_HTTP_TFVAR}'
                     }
                 }
+            }
+        }
             }
         }
         stage('Elastic IP') {
