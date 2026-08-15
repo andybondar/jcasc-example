@@ -1,3 +1,16 @@
+def terraformPlanAndApply(String planCommand, String applyCommand) {
+    int planExitCode = sh(script: planCommand, returnStatus: true)
+    if (planExitCode == 0) {
+        echo 'Terraform plan reports no changes; skipping approval and apply.'
+    } else if (planExitCode == 2) {
+        timeout(time: 10, unit: 'MINUTES') {
+            input message: 'Proceed?', ok: 'Yes'
+        }
+        sh applyCommand
+    } else {
+        error 'terraform plan failed with exit code ' + planExitCode
+    }
+}
 pipeline {
     agent any
 
@@ -30,11 +43,7 @@ pipeline {
                         sh 'pwd'
                         sh 'terraform init -lock-timeout=60s'
                         sh 'terraform validate'
-                        sh 'terraform plan -lock-timeout=60s'
-                        timeout(time: 10, unit: 'MINUTES') {
-                            input message: 'Proceed?', ok: 'Yes'
-                        }
-                        sh 'terraform apply -lock-timeout=60s -auto-approve'
+                        terraformPlanAndApply('terraform plan -lock-timeout=60s -detailed-exitcode', 'terraform apply -lock-timeout=60s -auto-approve')
                     }
                 }
             }
@@ -45,11 +54,7 @@ pipeline {
                     sh 'pwd'
                     sh 'terraform init -lock-timeout=60s'
                     sh 'terraform validate'
-                    sh 'terraform plan -lock-timeout=60s'
-                    timeout(time: 10, unit: 'MINUTES') {
-                        input message: 'Proceed?', ok: 'Yes'
-                    }
-                    sh 'terraform apply -lock-timeout=60s -auto-approve'
+                    terraformPlanAndApply('terraform plan -lock-timeout=60s -detailed-exitcode', 'terraform apply -lock-timeout=60s -auto-approve')
                 }
             }
         }
@@ -60,11 +65,7 @@ pipeline {
                         sh 'pwd'
                         sh 'terraform init -lock-timeout=60s'
                         sh 'terraform validate'
-                        sh 'terraform plan -lock-timeout=60s -var-file=${ALLOW_HTTP_TFVAR}'
-                        timeout(time: 10, unit: 'MINUTES') {
-                            input message: 'Proceed?', ok: 'Yes'
-                        }
-                        sh 'terraform apply -lock-timeout=60s -auto-approve -var-file=${ALLOW_HTTP_TFVAR}'
+                        terraformPlanAndApply('terraform plan -lock-timeout=60s -detailed-exitcode -var-file=${ALLOW_HTTP_TFVAR}', 'terraform apply -lock-timeout=60s -auto-approve -var-file=${ALLOW_HTTP_TFVAR}')
                     }
                 }
             }
@@ -78,11 +79,7 @@ pipeline {
                         sh 'pwd'
                         sh 'terraform init -lock-timeout=60s'
                         sh 'terraform validate'
-                        sh 'terraform plan -lock-timeout=60s'
-                        timeout(time: 10, unit: 'MINUTES') {
-                            input message: 'Proceed?', ok: 'Yes'
-                        }
-                        sh 'terraform apply -lock-timeout=60s -auto-approve'
+                        terraformPlanAndApply('terraform plan -lock-timeout=60s -detailed-exitcode', 'terraform apply -lock-timeout=60s -auto-approve')
                     }
                 }
             }
@@ -94,11 +91,7 @@ pipeline {
                         sh 'pwd'
                         sh 'terraform init -lock-timeout=60s'
                         sh 'terraform validate'
-                        sh 'terraform plan -lock-timeout=60s'
-                        timeout(time: 10, unit: 'MINUTES') {
-                            input message: 'Proceed?', ok: 'Yes'
-                        }
-                        sh 'terraform apply -lock-timeout=60s -auto-approve'
+                        terraformPlanAndApply('terraform plan -lock-timeout=60s -detailed-exitcode', 'terraform apply -lock-timeout=60s -auto-approve')
                     }
                 }
             }
