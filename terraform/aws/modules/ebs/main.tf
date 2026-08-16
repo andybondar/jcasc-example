@@ -4,4 +4,6 @@ resource "aws_ebs_volume" "main" {
   encrypted         = true
 
   tags = local.tags
+
+  final_snapshot = true
 }
