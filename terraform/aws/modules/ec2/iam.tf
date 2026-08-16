@@ -25,6 +25,11 @@ resource "aws_iam_role_policy_attachment" "secrets" {
   policy_arn = "arn:aws:iam::aws:policy/AWSSecretsManagerClientReadOnlyAccess"
 }
 
+resource "aws_iam_role_policy_attachment" "s3" {
+  role = aws_iam_role.ec2_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
+}
+
 resource "aws_iam_instance_profile" "ec2_profile" {
   name = "ec2_iam_profile"
   role = aws_iam_role.ec2_role.name

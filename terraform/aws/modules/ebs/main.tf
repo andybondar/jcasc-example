@@ -7,4 +7,8 @@ resource "aws_ebs_volume" "main" {
   tags = local.tags
 
   final_snapshot = true
+
+  timeouts {
+    delete = "30m"
+  }
 }
