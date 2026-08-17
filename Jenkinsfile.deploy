@@ -38,7 +38,7 @@ pipeline {
             parallel {
         stage('Key pair') {
             steps {
-                dir('terraform/aws/modules/keypair') {
+                dir('terraform/aws/vm/modules/keypair') {
                     withCredentials([file(credentialsId: 'jcasc_id_rsa.pub', variable: 'TF_VAR_public_key_path')]) {
                         sh 'pwd'
                         sh 'terraform init -lock-timeout=60s'
@@ -50,7 +50,7 @@ pipeline {
         }
         stage('EBS') {
             steps {
-                dir('terraform/aws/modules/ebs') {
+                dir('terraform/aws/vm/modules/ebs') {
                     sh 'pwd'
                     sh 'terraform init -lock-timeout=60s'
                     sh 'terraform validate'
@@ -60,7 +60,7 @@ pipeline {
         }
         stage('Network') {
             steps {
-                dir('terraform/aws/modules/network') {
+                dir('terraform/aws/vm/modules/network') {
                     withCredentials([file(credentialsId: 'jcasc_allow_http_terraform.tfvars', variable: 'ALLOW_HTTP_TFVAR')]) {
                         sh 'pwd'
                         sh 'terraform init -lock-timeout=60s'
@@ -74,7 +74,7 @@ pipeline {
         }
         stage('Elastic IP') {
             steps {
-                dir('terraform/aws/modules/eip') {
+                dir('terraform/aws/vm/modules/eip') {
                     withCredentials([string(credentialsId: 'jcasc_domain_name', variable: 'TF_VAR_domain')]) {
                         sh 'pwd'
                         sh 'terraform init -lock-timeout=60s'
@@ -86,7 +86,7 @@ pipeline {
         }
         stage('EC2') {
             steps {
-                dir('terraform/aws/modules/ec2') {
+                dir('terraform/aws/vm/modules/ec2') {
                     withCredentials([string(credentialsId: 'jcasc_aws_account', variable: 'TF_VAR_aws_account')]) {
                         sh 'pwd'
                         sh 'terraform init -lock-timeout=60s'
