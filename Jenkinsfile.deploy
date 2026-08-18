@@ -3,8 +3,12 @@ def terraformPlanAndApply(String planCommand, String applyCommand) {
     if (planExitCode == 0) {
         echo 'Terraform plan reports no changes; skipping approval and apply.'
     } else if (planExitCode == 2) {
-        timeout(time: 10, unit: 'MINUTES') {
-            input message: 'Proceed?', ok: 'Yes'
+        if (params.approve_all) {
+            echo 'approve_all is enabled; skipping manual approval.'
+        } else {
+            timeout(time: 10, unit: 'MINUTES') {
+                input message: 'Proceed?', ok: 'Yes'
+            }
         }
         sh applyCommand
     } else {
